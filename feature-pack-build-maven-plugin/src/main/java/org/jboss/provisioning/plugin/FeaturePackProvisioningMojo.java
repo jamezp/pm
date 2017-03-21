@@ -33,6 +33,7 @@ import javax.xml.stream.XMLStreamException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
@@ -163,11 +164,11 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
         printDeps(cRes.getRoot());
     }
 
-    private static void printDeps(DependencyNode dep) {
+    private void printDeps(DependencyNode dep) {
         printDeps(dep, 0);
     }
 
-    private static void printDeps(DependencyNode dep, int level) {
+    private void printDeps(DependencyNode dep, int level) {
         final StringBuilder buf = new StringBuilder();
         for(int i = 0; i < level; ++i) {
             buf.append("  ");
@@ -177,7 +178,7 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
             .append(dep.getArtifact().getArtifactId())
             .append(':')
             .append(dep.getArtifact().getVersion());
-        System.out.println(buf.toString());
+        getLog().info(buf);
         for(DependencyNode child : dep.getChildren()) {
             printDeps(child, level + 1);
         }
@@ -192,10 +193,12 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
             throw new MojoExecutionException("Failed to resolve dependency", e);
         }
 
-        System.out.println("   root " + dRes.getRoot());
-        System.out.println("deps " + dRes.getArtifactResults());
+        final Log log = getLog();
+
+        log.info("   root " + dRes.getRoot());
+        log.info("deps " + dRes.getArtifactResults());
         for(ArtifactResult aRes : dRes.getArtifactResults()) {
-            System.out.println("  - " + aRes.getArtifact());
+            log.info("  - " + aRes.getArtifact());
         }
     }
 
@@ -211,7 +214,7 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
             throw new MojoExecutionException("Failed to resolve version", e);
         }
 
-        System.out.println("  version=" + vRes.getVersion());
+        getLog().info("  version=" + vRes.getVersion());
     }
 
     private void artifactRequest(final Artifact artifact) {
@@ -224,7 +227,7 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
         } catch ( ArtifactResolutionException e ) {
             throw new RuntimeException("failed to resolve artifact "+artifact, e);
         }
-        System.out.println(artifact.toString() + " " + result.getArtifact().getFile().getAbsolutePath());
+        getLog().info(artifact.toString() + " " + result.getArtifact().getFile().getAbsolutePath());
 
         final File targetFile = new File(project.getBasedir(), result.getArtifact().getFile().getName());
         if(targetFile.exists()) {

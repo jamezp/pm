@@ -27,6 +27,7 @@ import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningDescriptionException;
 import org.jboss.provisioning.config.FeaturePackConfig;
 import org.jboss.provisioning.config.ProvisioningConfig;
+import org.jboss.provisioning.logging.FeaturePackLogger;
 import org.jboss.provisioning.spec.FeaturePackLayoutDescription;
 import org.jboss.provisioning.spec.FeaturePackSpec;
 import org.jboss.provisioning.state.ProvisionedFeaturePack;
@@ -70,7 +71,7 @@ public class FeaturePackLayoutInstaller {
 
         for(ProvisionedFeaturePack provisionedFp : provisionedState.getFeaturePacks()) {
             final ArtifactCoords.Gav fpGav = provisionedFp.getGav();
-            System.out.println("Installing " + fpGav /*+ " to " + installDir*/);
+            FeaturePackLogger.LOGGER.installing(fpGav, installDir);
             Path fpDir;
             try {
                 fpDir = LayoutUtils.getFeaturePackDir(layoutDir, fpGav);

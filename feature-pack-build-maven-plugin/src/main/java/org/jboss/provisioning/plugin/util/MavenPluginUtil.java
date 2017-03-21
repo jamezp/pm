@@ -21,6 +21,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import org.apache.maven.plugin.logging.Log;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.installation.InstallRequest;
@@ -33,7 +34,7 @@ import org.jboss.provisioning.util.ZipUtils;
  */
 public class MavenPluginUtil {
 
-    public static InstallRequest getInstallLayoutRequest(final Path layoutDir) throws IOException {
+    public static InstallRequest getInstallLayoutRequest(final Path layoutDir, final Log log) throws IOException {
         final InstallRequest installReq = new InstallRequest();
         try (DirectoryStream<Path> wdStream = Files.newDirectoryStream(layoutDir, entry -> Files.isDirectory(entry))) {
             for (Path groupDir : wdStream) {
@@ -43,7 +44,7 @@ public class MavenPluginUtil {
                         final String artifactId = artifactDir.getFileName().toString();
                         try (DirectoryStream<Path> artifactStream = Files.newDirectoryStream(artifactDir)) {
                             for (Path versionDir : artifactStream) {
-                                System.out.println("Preparing feature-pack " + versionDir.toAbsolutePath());
+                                log.info("Preparing feature-pack " + versionDir.toAbsolutePath());
                                 final Path zippedFP = layoutDir.resolve(
                                         groupId + '_' + artifactId + '_' + versionDir.getFileName().toString() + ".zip");
                                 if(Files.exists(zippedFP)) {

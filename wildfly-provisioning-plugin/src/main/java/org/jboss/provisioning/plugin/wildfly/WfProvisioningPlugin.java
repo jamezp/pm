@@ -89,7 +89,8 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
     @Override
     public void postInstall(ProvisioningContext ctx) throws ProvisioningException {
 
-        System.out.println("WildFly provisioning plug-in");
+        // TODO (jrp) should this be moved into the logger interface?
+        ProvisioningPluginLogger.LOGGER.info("WildFly provisioning plug-in");
 
         final String thinServerProp = System.getProperty("wfThinServer");
         if(thinServerProp != null) {

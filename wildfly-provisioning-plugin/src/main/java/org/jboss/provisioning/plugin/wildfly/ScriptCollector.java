@@ -40,6 +40,7 @@ import org.jboss.provisioning.Constants;
 import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.plugin.ProvisioningContext;
+import org.jboss.provisioning.plugin.ProvisioningPlugin;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScripts;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScriptsParser;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScripts.Script;
@@ -149,7 +150,7 @@ abstract class ScriptCollector {
             buf.append(" for profile ").append(profile);
         }
         buf.append(" from feature-pack ").append(provisionedFp.getGav().toString()).append(" package ").append(pkgName);
-        System.out.println(buf);
+        ProvisioningPluginLogger.LOGGER.info(buf);
         if(profile != null) {
             addCommand("set profile=" + profile);
             addCommand("/profile=$profile:add");
@@ -318,21 +319,19 @@ abstract class ScriptCollector {
 
     protected void logScript(final ProvisionedFeaturePack provisionedFp, String pkgName, Path script) {
         if(!provisionedFp.getGav().equals(lastLoggedGav)) {
-            System.out.println("  " + provisionedFp.getGav());
+            ProvisioningPluginLogger.LOGGER.infof(" %s", provisionedFp.getGav());
             lastLoggedGav = provisionedFp.getGav();
             lastLoggedPackage = null;
         }
         if(!pkgName.equals(lastLoggedPackage)) {
-            System.out.println("    " + pkgName);
+            ProvisioningPluginLogger.LOGGER.infof("  %s", pkgName);
             lastLoggedPackage = pkgName;
         }
-        System.out.println("      - " + script.getFileName());
+        ProvisioningPluginLogger.LOGGER.infof("      - %s", script.getFileName());
     }
 
     void run() throws ProvisioningException {
-        System.out.print(" Generating ");
-        System.out.print(configName);
-        System.out.println(" configuration");
+        ProvisioningPluginLogger.LOGGER.generating(configName);
         try {
             scriptWriter.flush();
             scriptWriter.close();
@@ -414,13 +413,12 @@ abstract class ScriptCollector {
                     final String fpArtifact = p.getFileName().toString();
                     p = p.getParent();
                     final String fpGroup = p.getFileName().toString();
-                    System.out.println("Failed to execute script " + scriptName +
-                            " from " +  ArtifactCoords.newGav(fpGroup, fpArtifact, fpVersion) +
-                            " package " + pkgName + " line #" + opIndex);
-                    System.out.println(errorWriter.getBuffer());
+                    ProvisioningPluginLogger.LOGGER.scriptExecutionFailure(scriptName,
+                            ArtifactCoords.newGav(fpGroup, fpArtifact, fpVersion), pkgName, opIndex);
+                    ProvisioningPluginLogger.LOGGER.error(errorWriter.getBuffer());
                 } else {
-                    System.out.println("Could not locate the cause of the error in the CLI output.");
-                    System.out.println(errorWriter.getBuffer());
+                    ProvisioningPluginLogger.LOGGER.scriptExecutionFailure();
+                    ProvisioningPluginLogger.LOGGER.error(errorWriter.getBuffer());
                 }
                 throw new ProvisioningException("CLI configuration scripts failed.");
             }

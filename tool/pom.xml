@@ -69,6 +69,17 @@
     </dependency>
 
     <dependency>
+      <groupId>org.jboss.logmanager</groupId>
+      <artifactId>jboss-logmanager</artifactId>
+    </dependency>
+    <!-- TODO (jrp) move the versioning -->
+    <dependency>
+      <groupId>org.jboss.slf4j</groupId>
+      <artifactId>slf4j-jboss-logging</artifactId>
+      <version>1.1.0.Final</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.jboss.pm</groupId>
       <artifactId>feature-pack-api</artifactId>
     </dependency>
