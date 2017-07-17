@@ -41,6 +41,7 @@ import org.jboss.provisioning.Constants;
 import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.config.ProvisioningConfig;
+import org.jboss.provisioning.logging.FeaturePackApiLogger;
 import org.jboss.provisioning.plugin.DiffPlugin;
 import org.jboss.provisioning.plugin.ProvisioningPlugin;
 import org.jboss.provisioning.spec.FeaturePackSpec;
@@ -62,8 +63,9 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         // copy package content
         for(FeaturePackRuntime fp : runtime.fpRuntimes.values()) {
             final ArtifactCoords.Gav fpGav = fp.getGav();
+            // TODO (jrp) can we integrate this into the ProvisioningRuntime somehow?
             if (runtime.trace()) {
-                System.out.println("Installing " + fpGav);
+                FeaturePackApiLogger.LOGGER.installing(fpGav);
             }
             for(PackageRuntime pkg : fp.getPackages()) {
                 final Path pkgSrcDir = pkg.getContentDir();
@@ -93,8 +95,9 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         } catch (XMLStreamException | IOException e) {
             throw new FeaturePackInstallException(Errors.writeFile(PathsUtils.getProvisionedStateXml(runtime.stagedDir)), e);
         }
+        // TODO (jrp) can we integrate this into the ProvisioningRuntime somehow?
         if (runtime.trace()) {
-            System.out.println("Moving provisioned installation from staged directory to " + runtime.installDir);
+            FeaturePackApiLogger.LOGGER.movingFromStagedDir(runtime.installDir);
         }
         // copy from the staged to the target installation directory
         if (Files.exists(runtime.installDir)) {
@@ -361,7 +364,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         IoUtils.recursiveDelete(workDir);
         final long time = System.currentTimeMillis() - startTime;
         final long seconds = time / 1000;
-        System.out.println(new StringBuilder("Done in ").append(seconds).append('.').append(time - seconds*1000).append(" seconds").toString());
+        FeaturePackApiLogger.LOGGER.done(seconds, (time - seconds*1000));
     }
 
     private void executeDiffPlugins(Path target, Path customizedInstallation) throws ProvisioningException {

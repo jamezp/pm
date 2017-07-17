@@ -42,6 +42,7 @@ import org.jboss.provisioning.parameters.PackageParameter;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScripts;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScriptsParser;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScripts.Script;
+import org.jboss.provisioning.plugin.wildfly.logging.ProvisioningPluginLogger;
 import org.jboss.provisioning.runtime.FeaturePackRuntime;
 import org.jboss.provisioning.runtime.PackageRuntime;
 import org.jboss.provisioning.runtime.ProvisioningRuntime;
@@ -155,8 +156,9 @@ abstract class ScriptCollector {
             buf.append(" for profile ").append(profile);
         }
         buf.append(" from feature-pack ").append(fp.getGav().toString()).append(" package ").append(pkg.getName());
+        // TODO (jrp) this may need to be removed and replaced with a logmanager trace
         if(this.runtime.trace()) {
-            System.out.println(buf);
+            ProvisioningPluginLogger.LOGGER.info(buf);
         }
         if(profile != null) {
             addCommand("set profile=" + profile);
@@ -358,27 +360,25 @@ abstract class ScriptCollector {
     protected void logScript(final FeaturePackRuntime fp, String pkgName, Path script) {
         if(!fp.getGav().equals(lastLoggedGav)) {
             if(this.runtime.trace()) {
-                System.out.println("  " + fp.getGav());
+                ProvisioningPluginLogger.LOGGER.infof(" %s", fp.getGav());
             }
             lastLoggedGav = fp.getGav();
             lastLoggedPackage = null;
         }
         if(!pkgName.equals(lastLoggedPackage)) {
             if(this.runtime.trace()) {
-                System.out.println("    " + pkgName);
+                ProvisioningPluginLogger.LOGGER.infof("    %s", pkgName);
             }
             lastLoggedPackage = pkgName;
         }
         if (this.runtime.trace()) {
-            System.out.println("      - " + script.getFileName());
+            ProvisioningPluginLogger.LOGGER.infof("      - %s", script.getFileName());
         }
     }
 
     void run() throws ProvisioningException {
         if (this.runtime.trace()) {
-            System.out.print(" Generating ");
-            System.out.print(configName);
-            System.out.println(" configuration");
+            ProvisioningPluginLogger.LOGGER.infof(" Generating %s configuration", configName);
         }
         try {
             scriptWriter.flush();
@@ -460,11 +460,13 @@ abstract class ScriptCollector {
                     final String fpArtifact = p.getFileName().toString();
                     p = p.getParent();
                     final String fpGroup = p.getFileName().toString();
+                    // TODO (jrp) this should likely be part of the exception thrown, not a System.out.print
                     System.out.println("Failed to execute script " + scriptName +
                             " from " +  ArtifactCoords.newGav(fpGroup, fpArtifact, fpVersion) +
                             " package " + pkgName + " line #" + opIndex);
                     System.out.println(errorWriter.getBuffer());
                 } else {
+                    // TODO (jrp) this should likely be part of the exception thrown, not a System.out.print
                     System.out.println("Could not locate the cause of the error in the CLI output.");
                     System.out.println(errorWriter.getBuffer());
                 }

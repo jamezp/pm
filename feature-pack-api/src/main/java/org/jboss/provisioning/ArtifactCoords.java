@@ -19,6 +19,8 @@ package org.jboss.provisioning;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
+
 /**
  * Complete Maven artifact coordinates.
  *
@@ -48,7 +50,7 @@ public class ArtifactCoords implements Comparable<ArtifactCoords> {
 
         int i = str.indexOf(':');
         if(i <= 0) {
-            throw new IllegalArgumentException("groupId is missing in '" + str + "'");
+            throw FeaturePackApiMessages.MESSAGES.missingGroupId(str);
         }
         final String groupId = str.substring(0, i);
         final String artifactId;
@@ -263,8 +265,7 @@ public class ArtifactCoords implements Comparable<ArtifactCoords> {
     private ArtifactCoords(String str) {
         final Matcher m = COORDS_PATTERN.matcher(str);
         if (!m.matches()) {
-            throw new IllegalArgumentException("Bad artifact coordinates " + str
-                    + ", expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>");
+            throw FeaturePackApiMessages.MESSAGES.invalidCoordinates(str);
         }
         groupId = m.group(1);
         artifactId = m.group(2);

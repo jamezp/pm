@@ -44,7 +44,7 @@ public class WfDiffPlugin implements DiffPlugin {
     @Override
     public void calculateConfiguationChanges(ProvisioningRuntime runtime, Path customizedInstallation, Path target) throws ProvisioningException {
         if(runtime.trace()) {
-            System.out.println("WildFly diff plug-in");
+            ProvisioningPluginLogger.LOGGER.diffPluginName();
         }
 //         JBoss Modules overrides the default providers
         Process process = null;
@@ -115,7 +115,7 @@ public class WfDiffPlugin implements DiffPlugin {
     }
     private static Process launchServer(Path installDir, boolean trace) throws IOException {
         if (trace) {
-            System.out.println("Starting full server for " + installDir);
+            ProvisioningPluginLogger.LOGGER.startingFullServer(installDir);
         }
         Launcher launcher = new Launcher(StandaloneCommandBuilder.of(installDir))
                 .setRedirectErrorStream(true)

@@ -81,13 +81,11 @@
     <dependency>
       <groupId>org.jboss.logging</groupId>
       <artifactId>jboss-logging</artifactId>
-      <version>${version.org.jboss.logging}</version>
     </dependency>
 
     <dependency>
       <groupId>org.jboss.logmanager</groupId>
       <artifactId>jboss-logmanager</artifactId>
-      <version>${version.org.jboss.logmanager}</version>
     </dependency>
 
   </dependencies>

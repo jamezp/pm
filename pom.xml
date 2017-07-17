@@ -73,17 +73,19 @@
     <version.org.codehaus.mojo.xml-maven-plugin>1.0.1</version.org.codehaus.mojo.xml-maven-plugin>
     <version.org.codehaus.plexus.plexus-utils>3.0.24</version.org.codehaus.plexus.plexus-utils>
     <version.org.eclipse.aether>1.1.0</version.org.eclipse.aether>
+    <version.org.eclipse.sisu>0.3.3</version.org.eclipse.sisu>
     <version.org.jboss.aesh.aesh>0.66.15</version.org.jboss.aesh.aesh>
     <version.org.jboss.aesh.aesh-extensions>0.66</version.org.jboss.aesh.aesh-extensions>
     <version.org.jboss.jandex>2.0.3.Final</version.org.jboss.jandex>
     <version.org.jboss.modules.jboss-modules>1.6.0.Beta9</version.org.jboss.modules.jboss-modules>
     <version.org.wildfly.core.wildfly-core>3.0.0.Beta28</version.org.wildfly.core.wildfly-core>
     <version.org.jboss.logging>3.3.1.Final</version.org.jboss.logging>
+    <version.org.jboss.logging.jboss-logging-tools>2.1.0.Beta1</version.org.jboss.logging.jboss-logging-tools>
     <version.org.jboss.logmanager>2.0.6.Final</version.org.jboss.logmanager>
 
     <!-- Checkstyle configuration -->
     <linkXRef>false</linkXRef>
-    <version.org.wildfly.checkstyle-config>1.0.4.Final</version.org.wildfly.checkstyle-config>
+    <version.org.wildfly.checkstyle-config>1.0.5.Final</version.org.wildfly.checkstyle-config>
     <version.org.jboss.staxmapper>1.1.0.Final</version.org.jboss.staxmapper>
 
     <!-- license-maven-plugin configuration -->
@@ -287,7 +289,6 @@
         <version>${wagonVersion}</version>
       </dependency>
       -->
-<!--
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging</artifactId>
@@ -297,13 +298,13 @@
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging-processor</artifactId>
-        <version>${version.org.jboss.logging.processor}</version>
+        <version>${version.org.jboss.logging.jboss-logging-tools}</version>
       </dependency>
 
       <dependency>
         <groupId>org.jboss.logging</groupId>
         <artifactId>jboss-logging-annotations</artifactId>
-        <version>${version.org.jboss.logging.processor}</version>
+        <version>${version.org.jboss.logging.jboss-logging-tools}</version>
         <scope>provided</scope>
       </dependency>
 
@@ -312,7 +313,7 @@
         <artifactId>jboss-logmanager</artifactId>
         <version>${version.org.jboss.logmanager}</version>
       </dependency>
--->
+
       <dependency>
         <groupId>org.wildfly.checkstyle</groupId>
         <artifactId>wildfly-checkstyle-config</artifactId>
@@ -366,6 +367,7 @@
             <consoleOutput>true</consoleOutput>
             <failsOnError>true</failsOnError>
             <includeTestSourceDirectory>true</includeTestSourceDirectory>
+            <excludes>**/*$logger.java,**/*$bundle.java</excludes>
             <useFile />
           </configuration>
           <dependencies>
@@ -423,6 +425,12 @@
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>xml-maven-plugin</artifactId>
           <version>${version.org.codehaus.mojo.xml-maven-plugin}</version>
+        </plugin>
+        <!-- Required for JSR-330 dependency injection -->
+        <plugin>
+          <groupId>org.eclipse.sisu</groupId>
+          <artifactId>sisu-maven-plugin</artifactId>
+          <version>${version.org.eclipse.sisu}</version>
         </plugin>
       </plugins>
     </pluginManagement>

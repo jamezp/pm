@@ -54,6 +54,7 @@ import org.jboss.provisioning.plugin.wildfly.config.CopyPath;
 import org.jboss.provisioning.plugin.wildfly.config.FilePermission;
 import org.jboss.provisioning.plugin.wildfly.config.GeneratorConfig;
 import org.jboss.provisioning.plugin.wildfly.config.WildFlyPackageTasks;
+import org.jboss.provisioning.plugin.wildfly.logging.ProvisioningPluginLogger;
 import org.jboss.provisioning.runtime.FeaturePackRuntime;
 import org.jboss.provisioning.runtime.PackageRuntime;
 import org.jboss.provisioning.runtime.ProvisioningRuntime;
@@ -118,9 +119,8 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
      */
     @Override
     public void postInstall(ProvisioningRuntime runtime) throws ProvisioningException {
-        if(runtime.trace()) {
-            System.out.println("WildFly provisioning plug-in");
-        }
+
+        ProvisioningPluginLogger.LOGGER.provisioningPluginName();
 
         final String thinServerProp = System.getProperty("wfThinServer");
         if(thinServerProp != null) {
