@@ -60,6 +60,7 @@ public class CliMain {
                 .addCommand(new Pwd())
                 .commandInvocationProvider(ciServices)
                 .create();
+        ConsoleMessageWriterSelector.messageWriter = new ConsoleMessageWriter(aeshConsole.getShell().out(), aeshConsole.getShell().err());
         aeshConsole.start();
     }
 }

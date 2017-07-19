@@ -39,6 +39,8 @@ import org.jboss.provisioning.ArtifactResolutionException;
 import org.jboss.provisioning.ArtifactResolver;
 import org.jboss.provisioning.Constants;
 import org.jboss.provisioning.Errors;
+import org.jboss.provisioning.MessageWriter;
+import org.jboss.provisioning.MessageWriterSelector;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.config.ProvisioningConfig;
 import org.jboss.provisioning.plugin.DiffPlugin;
@@ -62,9 +64,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         // copy package content
         for(FeaturePackRuntime fp : runtime.fpRuntimes.values()) {
             final ArtifactCoords.Gav fpGav = fp.getGav();
-            if (runtime.trace()) {
-                System.out.println("Installing " + fpGav);
-            }
+            runtime.messageWriter.trace("Installing %s", fpGav);
             for(PackageRuntime pkg : fp.getPackages()) {
                 final Path pkgSrcDir = pkg.getContentDir();
                 if (Files.exists(pkgSrcDir)) {
@@ -93,9 +93,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         } catch (XMLStreamException | IOException e) {
             throw new FeaturePackInstallException(Errors.writeFile(PathsUtils.getProvisionedStateXml(runtime.stagedDir)), e);
         }
-        if (runtime.trace()) {
-            System.out.println("Moving provisioned installation from staged directory to " + runtime.installDir);
-        }
+        runtime.messageWriter.trace("Moving provisioned installation from staged directory to %s", runtime.installDir);
         // copy from the staged to the target installation directory
         if (Files.exists(runtime.installDir)) {
             IoUtils.recursiveDelete(runtime.installDir);
@@ -122,6 +120,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
     private final Path pluginsDir;
     private final Map<ArtifactCoords.Gav, FeaturePackRuntime> fpRuntimes;
     private final Map<String, String> parameters = new HashMap<>();
+    private final MessageWriter messageWriter;
     private List<ProvisionedConfig> configs = Collections.emptyList();
 
     private final boolean trace;
@@ -173,6 +172,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         }
 
         this.tmpDir = workDir.resolve("tmp");
+        messageWriter = MessageWriterSelector.getInstance().get();
     }
 
     private void addConfig(ProvisionedConfig config) {
@@ -361,7 +361,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         IoUtils.recursiveDelete(workDir);
         final long time = System.currentTimeMillis() - startTime;
         final long seconds = time / 1000;
-        System.out.println(new StringBuilder("Done in ").append(seconds).append('.').append(time - seconds*1000).append(" seconds").toString());
+        messageWriter.info("Done in %d.%d seconds", seconds, (time - seconds*1000));
     }
 
     private void executeDiffPlugins(Path target, Path customizedInstallation) throws ProvisioningException {
