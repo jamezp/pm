@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import org.jboss.provisioning.Constants;
 import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningDescriptionException;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.spec.FeaturePackSpec;
 import org.jboss.provisioning.spec.PackageSpec;
 import org.jboss.provisioning.xml.PackageXmlParser;
@@ -45,7 +46,7 @@ public class FeaturePackLayoutDescriber {
 
     public static ProvisioningLayout describe(Path fpLayout, String encoding) throws ProvisioningDescriptionException {
         if(!Files.exists(fpLayout)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(fpLayout));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, fpLayout);
         }
         if(!Files.isDirectory(fpLayout)) {
             throw new UnsupportedOperationException(); // TODO
@@ -97,7 +98,7 @@ public class FeaturePackLayoutDescriber {
         assertDirectory(fpDir);
         final Path fpXml = fpDir.resolve(Constants.FEATURE_PACK_XML);
         if(!Files.exists(fpXml)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(fpXml));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, fpXml);
         }
         final FeaturePackLayout.Builder layoutBuilder;
         try (Reader is = Files.newBufferedReader(fpXml, Charset.forName(encoding))) {
@@ -132,7 +133,7 @@ public class FeaturePackLayoutDescriber {
         assertDirectory(pkgDir);
         final Path pkgXml = pkgDir.resolve(Constants.PACKAGE_XML);
         if(!Files.exists(pkgXml)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(pkgXml));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, pkgXml);
         }
         try (Reader in = Files.newBufferedReader(pkgXml, Charset.forName(encoding))) {
             return PackageXmlParser.getInstance().parse(in);
@@ -145,11 +146,11 @@ public class FeaturePackLayoutDescriber {
 
     private static void assertDirectory(Path dir) throws ProvisioningDescriptionException {
         if(!Files.isDirectory(dir)) {
-            throw new ProvisioningDescriptionException(Errors.notADir(dir));
+            throw FeaturePackApiMessages.MESSAGES.notADir(ProvisioningDescriptionException::new, dir);
         }
     }
 
     private static void failedToReadDirectory(Path p, IOException e) throws ProvisioningDescriptionException {
-        throw new ProvisioningDescriptionException(Errors.readDirectory(p), e);
+        throw FeaturePackApiMessages.MESSAGES.failedToReadDir(ProvisioningDescriptionException::new, e, p);
     }
 }

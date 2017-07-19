@@ -42,6 +42,7 @@ import org.jboss.provisioning.feature.FeatureGroupSpec;
 import org.jboss.provisioning.feature.FeatureReferenceSpec;
 import org.jboss.provisioning.feature.FeatureSpec;
 import org.jboss.provisioning.feature.SpecId;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.parameters.PackageParameter;
 import org.jboss.provisioning.parameters.PackageParameterResolver;
 import org.jboss.provisioning.parameters.ParameterResolver;
@@ -105,7 +106,7 @@ public class FeaturePackRuntime implements FeaturePack<PackageRuntime> {
             if(fgSpec == null) {
                 final Path specXml = dir.resolve(Constants.FEATURE_GROUPS).resolve(name + ".xml");
                 if(!Files.exists(specXml)) {
-                    throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(specXml));
+                    throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, specXml);
                 }
                 try(BufferedReader reader = Files.newBufferedReader(specXml)) {
                     fgSpec = FeatureGroupXmlParser.getInstance().parse(reader);

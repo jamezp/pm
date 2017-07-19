@@ -53,6 +53,7 @@ import org.jboss.provisioning.feature.FeatureGroupSpec;
 import org.jboss.provisioning.feature.FeatureId;
 import org.jboss.provisioning.feature.FeatureReferenceSpec;
 import org.jboss.provisioning.feature.SpecId;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.parameters.PackageParameter;
 import org.jboss.provisioning.parameters.PackageParameterResolver;
 import org.jboss.provisioning.spec.FeaturePackDependencySpec;
@@ -634,7 +635,7 @@ public class ProvisioningRuntimeBuilder {
 
             final Path fpXml = fpDir.resolve(Constants.FEATURE_PACK_XML);
             if(!Files.exists(fpXml)) {
-                throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(fpXml));
+                throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, fpXml);
             }
 
             try(BufferedReader reader = Files.newBufferedReader(fpXml)) {
@@ -667,7 +668,7 @@ public class ProvisioningRuntimeBuilder {
         }
         final Path pkgXml = pkg.dir.resolve(Constants.PACKAGE_XML);
         if(!Files.exists(pkgXml)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(pkgXml));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, pkgXml);
         }
         try(BufferedReader reader = Files.newBufferedReader(pkgXml)) {
             pkg.spec = PackageXmlParser.getInstance().parse(reader);
@@ -772,7 +773,7 @@ public class ProvisioningRuntimeBuilder {
         try {
             Files.createDirectories(path);
         } catch (IOException e) {
-            throw new ProvisioningException(Errors.mkdirs(path));
+            throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(ProvisioningException::new, path);
         }
     }
 
@@ -783,7 +784,7 @@ public class ProvisioningRuntimeBuilder {
             try {
                 IoUtils.copy(fpResources, workDir.resolve(Constants.RESOURCES));
             } catch (IOException e) {
-                throw new ProvisioningException(Errors.copyFile(fpResources, workDir.resolve(Constants.RESOURCES)), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, e, fpResources, workDir.resolve(Constants.RESOURCES));
             }
         }
 
@@ -795,7 +796,7 @@ public class ProvisioningRuntimeBuilder {
             try {
                 IoUtils.copy(fpPlugins, pluginsDir);
             } catch (IOException e) {
-                throw new ProvisioningException(Errors.copyFile(fpPlugins, workDir.resolve(Constants.PLUGINS)), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, e, fpPlugins, workDir.resolve(Constants.PLUGINS));
             }
         }
     }

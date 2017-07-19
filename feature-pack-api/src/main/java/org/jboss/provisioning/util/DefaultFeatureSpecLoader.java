@@ -29,6 +29,7 @@ import org.jboss.provisioning.ProvisioningDescriptionException;
 import org.jboss.provisioning.feature.FeatureSpec;
 import org.jboss.provisioning.feature.FeatureSpecLoader;
 import org.jboss.provisioning.feature.SpecId;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.xml.FeatureSpecXmlParser;
 
 /**
@@ -53,7 +54,7 @@ public class DefaultFeatureSpecLoader implements FeatureSpecLoader {
     public FeatureSpec load(SpecId spec) throws ProvisioningDescriptionException {
         final Path path = resolvePath(spec);
         if(!Files.exists(path)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(path));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, path);
         }
         try (BufferedReader reader = Files.newBufferedReader(path)) {
             return FeatureSpecXmlParser.getInstance().parse(reader);

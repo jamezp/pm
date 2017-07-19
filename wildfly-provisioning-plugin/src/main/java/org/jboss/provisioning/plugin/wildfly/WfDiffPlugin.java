@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.plugin.DiffPlugin;
+import org.jboss.provisioning.plugin.wildfly.logging.ProvisioningPluginLogger;
 import org.jboss.provisioning.runtime.ProvisioningRuntime;
 import org.wildfly.core.launcher.CliCommandBuilder;
 import org.wildfly.core.launcher.Launcher;

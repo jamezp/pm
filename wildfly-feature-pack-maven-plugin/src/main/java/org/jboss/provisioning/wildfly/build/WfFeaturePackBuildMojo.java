@@ -63,6 +63,7 @@ import org.jboss.provisioning.config.FeaturePackConfig;
 import org.jboss.provisioning.feature.Config;
 import org.jboss.provisioning.layout.FeaturePackLayout;
 import org.jboss.provisioning.layout.FeaturePackLayoutDescriber;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.plugin.FpMavenErrors;
 import org.jboss.provisioning.plugin.util.MavenPluginUtil;
 import org.jboss.provisioning.plugin.wildfly.WfConstants;
@@ -176,7 +177,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
         try {
             IoUtils.copy(Paths.get(configDir.getAbsolutePath() + resourcesDir), targetResources);
         } catch (IOException e1) {
-            throw new MojoExecutionException(Errors.copyFile(Paths.get(configDir.getAbsolutePath()).resolve(resourcesDir), targetResources), e1);
+            throw FeaturePackApiMessages.MESSAGES.failedToCopy(MojoExecutionException::new, e1, Paths.get(configDir.getAbsolutePath()).resolve(resourcesDir), targetResources);
         }
 
         final Path workDir = Paths.get(buildName, WfConstants.LAYOUT);
@@ -211,7 +212,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
 
         final Path srcModulesDir = targetResources.resolve(WfConstants.MODULES).resolve(WfConstants.SYSTEM).resolve(WfConstants.LAYERS).resolve(WfConstants.BASE);
         if(!Files.exists(srcModulesDir)) {
-            throw new MojoExecutionException(Errors.pathDoesNotExist(srcModulesDir));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(MojoExecutionException::new, srcModulesDir);
         }
 
         final PackageSpec.Builder modulesAll = PackageSpec.builder(WfConstants.MODULES_ALL);
@@ -300,7 +301,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
             try {
                 IoUtils.copy(scriptsDir, resourcesWildFly.resolve(WfConstants.SCRIPTS));
             } catch (IOException e) {
-                throw new MojoExecutionException(Errors.copyFile(scriptsDir, resourcesWildFly.resolve(WfConstants.SCRIPTS)), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToCopy(MojoExecutionException::new, e, scriptsDir, resourcesWildFly.resolve(WfConstants.SCRIPTS));
             }
         }
 
@@ -316,7 +317,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
             try {
                 IoUtils.copy(srcDir, targetDir);
             } catch (IOException e) {
-                throw new MojoExecutionException(Errors.copyFile(srcDir, targetDir), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToCopy(MojoExecutionException::new, e, srcDir, targetDir);
             }
         }
     }
@@ -334,7 +335,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
         try {
             IoUtils.copy(wfPlugInPath, pluginsDir.resolve(wfPlugInPath.getFileName()));
         } catch (IOException e) {
-            throw new MojoExecutionException(Errors.copyFile(wfPlugInPath, pluginsDir.resolve(wfPlugInPath.getFileName())));
+            throw FeaturePackApiMessages.MESSAGES.failedToCopy(MojoExecutionException::new, wfPlugInPath, pluginsDir.resolve(wfPlugInPath.getFileName()));
         }
     }
 
@@ -342,7 +343,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
         try {
             Files.createDirectories(resourcesWildFly);
         } catch (IOException e) {
-            throw new MojoExecutionException(Errors.mkdirs(resourcesWildFly), e);
+            throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(MojoExecutionException::new, e, resourcesWildFly);
         }
     }
 
@@ -364,7 +365,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
                 writer.newLine();
             }
         } catch (IOException e) {
-            throw new MojoExecutionException(Errors.mkdirs(schemaGroupsTxt.getParent()), e);
+            throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(MojoExecutionException::new, e, schemaGroupsTxt.getParent());
         } catch (XMLStreamException e) {
             throw new MojoExecutionException(Errors.writeFile(schemaGroupsTxt), e);
         } finally {
@@ -612,7 +613,7 @@ public class WfFeaturePackBuildMojo extends AbstractMojo {
     private Path getFPConfigFile() throws ProvisioningException {
         final Path path = Paths.get(configDir.getAbsolutePath(), configFile);
         if(!Files.exists(path)) {
-            throw new ProvisioningException(Errors.pathDoesNotExist(path));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningException::new, path);
         }
         return path;
     }

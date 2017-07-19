@@ -17,10 +17,17 @@
 
 package org.jboss.provisioning.logging;
 
+import java.nio.file.Path;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import org.jboss.logging.Messages;
+import org.jboss.logging.annotations.Cause;
 import org.jboss.logging.annotations.Message;
 import org.jboss.logging.annotations.MessageBundle;
+import org.jboss.logging.annotations.Producer;
 import org.jboss.logging.annotations.ValidIdRange;
+import org.jboss.provisioning.ProvisioningException;
 
 /**
  * @author <a href="mailto:jperkins@redhat.com">James R. Perkins</a>
@@ -52,4 +59,23 @@ public interface FeaturePackApiMessages {
      */
     @Message(id = 1001, value = "Bad artifact coordinates %s, expected format is <groupId>:<artifactId>[:<extension>[:<classifier>]]:<version>")
     IllegalArgumentException invalidCoordinates(String coordinates);
+
+    @Message(id = 1002, value = "Failed to locate %s")
+    <T extends Throwable> T pathDoesNotExist(@Producer Function<String, T> producer, Path path);
+    <T extends Throwable> T pathDoesNotExist(@Producer BiFunction<String, Throwable, T> producer, @Cause Throwable cause, Path path);
+
+    @Message(id = 1003, value = "Failed to make directories for %s")
+    <T extends Throwable> T failedToMakeDirs(@Producer Function<String, T> producer, Path path);
+    <T extends Throwable> T failedToMakeDirs(@Producer BiFunction<String, Throwable, T> producer, @Cause Throwable cause, Path path);
+
+    @Message(id = 1004, value = "Failed to read directory %s")
+    <T extends ProvisioningException> T failedToReadDir(@Producer Function<String, T> producer, Path dir);
+    <T extends ProvisioningException> T failedToReadDir(@Producer BiFunction<String, Throwable, T> producer, @Cause Throwable cause, Path dir);
+
+    @Message(id = 1005, value = "%s is not a directory")
+    <T extends ProvisioningException> T notADir(@Producer Function<String, T> producer, Path dir);
+
+    @Message(id = 1006, value = "Failed to copy %s to %s")
+    <T extends Throwable> T failedToCopy(@Producer Function<String, T> producer, Path src, Path target);
+    <T extends Throwable> T failedToCopy(@Producer BiFunction<String, Throwable, T> producer, @Cause Throwable cause, Path src, Path target);
 }

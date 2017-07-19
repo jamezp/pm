@@ -30,34 +30,6 @@ public interface Errors {
 
     // GENERAL MESSAGES
 
-    static String pathDoesNotExist(Path p) {
-        return "Failed to locate " + p.toAbsolutePath();
-    }
-
-    static String pathAlreadyExists(Path p) {
-        return "Path already exists " + p.toAbsolutePath();
-    }
-
-    static String mkdirs(Path p) {
-        return "Failed to make directories " + p.toAbsolutePath();
-    }
-
-    static String readDirectory(Path p) {
-        return "Failed to read directory " + p.toAbsolutePath();
-    }
-
-    static String notADir(Path p) {
-        return p.toAbsolutePath() + " is not a directory";
-    }
-
-    static String copyFile(Path src, Path target) {
-        return "Failed to copy " + src + " to " + target;
-    }
-
-    static String moveFile(Path src, Path target) {
-        return "Failed to move " + src.toAbsolutePath() + " to " + target.toAbsolutePath();
-    }
-
     static String openFile(Path p) {
         return "Failed to open " + p.toAbsolutePath();
     }
@@ -78,10 +50,6 @@ public interface Errors {
         return "Failed to write to " + p.toAbsolutePath();
     }
 
-    static String hashCalculation(Path path) {
-        return "Hash calculation failed for " + path;
-    }
-
     // FEATURE PACK INSTALL MESSAGES
 
     static String packageContentCopyFailed(String packageName) {
@@ -90,10 +58,6 @@ public interface Errors {
 
     static String packageNotFound(ArtifactCoords.Gav fp, String packageName) {
         return "Failed to resolve package " + packageName + " in " + fp;
-    }
-
-    static String missingParameter(String string) {
-        return "Missing " + string;
     }
 
     static String unknownPackage(ArtifactCoords.Gav gav, String pkgName) {
@@ -146,10 +110,6 @@ public interface Errors {
 
     static String unknownFeaturePackDependencyName(ArtifactCoords.Gav fpGav, String pkgName, String depName) {
         return fpGav + " package " + pkgName + " references unknown feature-pack dependency " + depName;
-    }
-
-    static String packageAlreadyExists(Gav gav, String name) {
-        return "Package " + name + " already exists in feature-pack " + gav;
     }
 
     static String packageParameterResolverNotProvided(Gav gav, String pkgName) {

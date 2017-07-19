@@ -21,8 +21,8 @@ import java.nio.file.Path;
 
 import org.jboss.provisioning.ArtifactCoords;
 import org.jboss.provisioning.Constants;
-import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningDescriptionException;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 
 /**
  *
@@ -37,7 +37,7 @@ public class LayoutUtils {
     public static Path getFeaturePackDir(Path fpLayoutDir, ArtifactCoords.Gav gav, boolean existing) throws ProvisioningDescriptionException {
         final Path fpPath = fpLayoutDir.resolve(gav.getGroupId()).resolve(gav.getArtifactId()).resolve(gav.getVersion());
         if(existing && !Files.exists(fpPath)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(fpPath));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, fpPath);
         }
         return fpPath;
     }
@@ -49,7 +49,7 @@ public class LayoutUtils {
     public static Path getPackageDir(Path fpDir, String packageName, boolean existing) throws ProvisioningDescriptionException {
         final Path dir = fpDir.resolve(Constants.PACKAGES).resolve(packageName);
         if(existing && !Files.exists(dir)) {
-            throw new ProvisioningDescriptionException(Errors.pathDoesNotExist(dir));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningDescriptionException::new, dir);
         }
         return dir;
     }

@@ -48,6 +48,7 @@ import java.util.stream.Stream;
 import org.jboss.provisioning.ArtifactCoords;
 import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.plugin.ProvisioningPlugin;
 import org.jboss.provisioning.plugin.wildfly.config.CopyArtifact;
 import org.jboss.provisioning.plugin.wildfly.config.CopyPath;
@@ -456,7 +457,7 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
         for(CopyPath copyPath : tasks.getCopyPaths()) {
             final Path src = pmWfDir.resolve(copyPath.getSrc());
             if (!Files.exists(src)) {
-                throw new ProvisioningException(Errors.pathDoesNotExist(src));
+                throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(ProvisioningException::new, src);
             }
             final Path target = copyPath.getTarget() == null ? runtime.getStagedDir() : runtime.getStagedDir().resolve(copyPath.getTarget());
             if (copyPath.isReplaceProperties()) {
@@ -464,7 +465,7 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
                     try {
                         Files.createDirectories(target.getParent());
                     } catch (IOException e) {
-                        throw new ProvisioningException(Errors.mkdirs(target.getParent()), e);
+                        throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(ProvisioningException::new, e, target.getParent());
                     }
                 }
                 try {
@@ -490,13 +491,13 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
                                 }
                             });
                 } catch (IOException e) {
-                    throw new ProvisioningException(Errors.copyFile(src, target), e);
+                    throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, e, src, target);
                 }
             } else {
                 try {
                     IoUtils.copy(src, target);
                 } catch (IOException e) {
-                    throw new ProvisioningException(Errors.copyFile(src, target));
+                    throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, src, target);
                 }
             }
         }
@@ -550,7 +551,7 @@ public class WfProvisioningPlugin implements ProvisioningPlugin {
                 try {
                     Files.createDirectories(dir);
                 } catch (IOException e) {
-                    throw new ProvisioningException(Errors.mkdirs(dir));
+                    throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(ProvisioningException::new, dir);
                 }
             }
         }

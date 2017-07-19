@@ -29,6 +29,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.jboss.provisioning.config.FeaturePackConfig;
 import org.jboss.provisioning.config.ProvisioningConfig;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.parameters.PackageParameterResolver;
 import org.jboss.provisioning.runtime.ProvisioningRuntime;
 import org.jboss.provisioning.runtime.ProvisioningRuntimeBuilder;
@@ -201,7 +202,7 @@ public class ProvisioningManager {
 
         if(Files.exists(installationHome)) {
             if(!Files.isDirectory(installationHome)) {
-                throw new ProvisioningException(Errors.notADir(installationHome));
+                throw FeaturePackApiMessages.MESSAGES.notADir(ProvisioningException::new, installationHome);
             }
             try(DirectoryStream<Path> stream = Files.newDirectoryStream(installationHome)) {
                 boolean usableDir = true;
@@ -218,7 +219,7 @@ public class ProvisioningManager {
                     throw new ProvisioningException("The installation home directory has to be empty or contain a provisioned installation to be used by the tool.");
                 }
             } catch (IOException e) {
-                throw new ProvisioningException(Errors.readDirectory(installationHome));
+                throw FeaturePackApiMessages.MESSAGES.failedToReadDir(ProvisioningException::new, installationHome);
             }
         }
 
@@ -229,7 +230,7 @@ public class ProvisioningManager {
                         IoUtils.recursiveDelete(p);
                     }
                 } catch (IOException e) {
-                    throw new ProvisioningException(Errors.readDirectory(installationHome));
+                    throw FeaturePackApiMessages.MESSAGES.failedToReadDir(ProvisioningException::new, installationHome);
                 }
             }
             return;

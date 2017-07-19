@@ -50,6 +50,7 @@ import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.ProvisioningManager;
 import org.jboss.provisioning.config.ProvisioningConfig;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.xml.ProvisioningXmlParser;
 
 /**
@@ -84,7 +85,7 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
         }
         final Path provXml = Paths.get(provXmlArg);
         if(!Files.exists(provXml)) {
-            throw new MojoExecutionException(Errors.pathDoesNotExist(provXml));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(MojoExecutionException::new, provXml);
         }
 
         final String installDirArg = repoSession.getSystemProperties().get(Constants.PM_INSTALL_DIR);
@@ -97,7 +98,7 @@ public class FeaturePackProvisioningMojo extends AbstractMojo {
         try(Reader r = Files.newBufferedReader(provXml, Charset.forName(encoding))) {
             provisioningConfig = ProvisioningXmlParser.getInstance().parse(r);
         } catch (FileNotFoundException e) {
-            throw new MojoExecutionException(Errors.pathDoesNotExist(provXml), e);
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(MojoExecutionException::new, e, provXml);
         } catch (XMLStreamException e) {
             throw new MojoExecutionException(Errors.parseXml(provXml), e);
         } catch (IOException e) {

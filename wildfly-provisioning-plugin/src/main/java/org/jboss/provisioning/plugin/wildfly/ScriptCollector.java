@@ -38,6 +38,7 @@ import javax.xml.stream.XMLStreamException;
 import org.jboss.provisioning.ArtifactCoords;
 import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.parameters.PackageParameter;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScripts;
 import org.jboss.provisioning.plugin.wildfly.config.PackageScriptsParser;
@@ -289,7 +290,7 @@ abstract class ScriptCollector {
                 try {
                     IoUtils.copy(tmpPath, scriptPath);
                 } catch (IOException e) {
-                    throw new ProvisioningException(Errors.copyFile(tmpPath, scriptPath), e);
+                    throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, e, tmpPath, scriptPath);
                 }
             }
             if(script.hasParameters()) {

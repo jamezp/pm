@@ -42,6 +42,7 @@ import org.jboss.provisioning.Errors;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.config.ProvisioningConfig;
 import org.jboss.provisioning.logging.FeaturePackApiLogger;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.plugin.DiffPlugin;
 import org.jboss.provisioning.plugin.ProvisioningPlugin;
 import org.jboss.provisioning.spec.FeaturePackSpec;
@@ -106,7 +107,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         try {
             IoUtils.copy(runtime.stagedDir, runtime.installDir);
         } catch (IOException e) {
-            throw new ProvisioningException(Errors.copyFile(runtime.stagedDir, runtime.installDir));
+            throw FeaturePackApiMessages.MESSAGES.failedToCopy(ProvisioningException::new, runtime.stagedDir, runtime.installDir);
         }
     }
 
@@ -172,7 +173,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
         try {
             Files.createDirectories(stagedDir);
         } catch(IOException e) {
-            throw new ProvisioningException(Errors.mkdirs(stagedDir), e);
+            throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(ProvisioningException::new, e, stagedDir);
         }
 
         this.tmpDir = workDir.resolve("tmp");
@@ -334,7 +335,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
                     }
                 }
             } catch (IOException e) {
-                throw new ProvisioningException(Errors.readDirectory(pluginsDir), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToReadDir(ProvisioningException::new, e, pluginsDir);
             }
             if(!urls.isEmpty()) {
                 final Thread thread = Thread.currentThread();
@@ -384,7 +385,7 @@ public class ProvisioningRuntime implements FeaturePackSet<FeaturePackRuntime>, 
                     }
                 }
             } catch (IOException e) {
-                throw new ProvisioningException(Errors.readDirectory(pluginsDir), e);
+                throw FeaturePackApiMessages.MESSAGES.failedToReadDir(ProvisioningException::new, e, pluginsDir);
             }
             if(!urls.isEmpty()) {
                 final Thread thread = Thread.currentThread();

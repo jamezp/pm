@@ -35,7 +35,7 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.RepositorySystemSession;
 import org.eclipse.aether.installation.InstallationException;
 import org.jboss.provisioning.Constants;
-import org.jboss.provisioning.Errors;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.plugin.util.MavenPluginUtil;
 
 /**
@@ -63,7 +63,7 @@ public class FeaturePackInstallMojo extends AbstractMojo {
         }
         final Path workDir = Paths.get(workdirPath);
         if(!Files.exists(workDir)) {
-            throw new MojoExecutionException(Errors.pathDoesNotExist(workDir.toAbsolutePath()));
+            throw FeaturePackApiMessages.MESSAGES.pathDoesNotExist(MojoExecutionException::new, workDir.toAbsolutePath());
         }
 
         try {

@@ -28,6 +28,7 @@ import org.jboss.provisioning.ProvisioningDescriptionException;
 import org.jboss.provisioning.ProvisioningException;
 import org.jboss.provisioning.config.FeaturePackConfig;
 import org.jboss.provisioning.config.ProvisioningConfig;
+import org.jboss.provisioning.logging.FeaturePackApiMessages;
 import org.jboss.provisioning.parameters.PackageParameter;
 import org.jboss.provisioning.parameters.PackageParameterResolver;
 import org.jboss.provisioning.plugin.ProvisioningPlugin;
@@ -62,7 +63,7 @@ public class PackageParametersInPluginTestCase extends PmProvisionConfigTestBase
                             try {
                                 Files.createDirectories(dir);
                             } catch (IOException e) {
-                                throw new ProvisioningException(Errors.mkdirs(dir), e);
+                                throw FeaturePackApiMessages.MESSAGES.failedToMakeDirs(ProvisioningException::new, e, dir);
                             }
                         }
                         for(PackageParameter param : pkg.getParameters()) {
